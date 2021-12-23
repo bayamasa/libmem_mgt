@@ -25,7 +25,6 @@ typedef struct s_mem_mgt
 	size_t		use_mem_info;
 }	t_mem_mgt;
 
-
 /* 関数のプロトタイプ宣言 */
 void	mem_mgt_init(void);
 void	*mem_mgt_malloc(size_t size, const char *file, unsigned int line, const char *func);
