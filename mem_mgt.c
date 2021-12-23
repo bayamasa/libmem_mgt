@@ -50,7 +50,7 @@ void	*mem_mgt_malloc(size_t size, const char *file, unsigned int line, const cha
 	return (ptr);
 }
 
-/* メモリの確保とそのアドレスのメモリ情報を記録から削除する関数 */
+/* メモリの解放とそのアドレスのメモリ情報を記録から削除する関数 */
 void	mem_mgt_free(void *ptr)
 {
 	size_t	i;
@@ -74,7 +74,7 @@ void	mem_mgt_free(void *ptr)
 	free(ptr);
 }
 
-/* 解放が行われていないメモリの情報を表示し、プログラムを終了する関数 */
+/* 未解放メモリの情報を表示し、全て解放し、プログラムを終了する関数 */
 void	mem_mgt_finish_check(int n)
 {
 	size_t	i;
@@ -101,7 +101,7 @@ void	mem_mgt_finish_check(int n)
 	exit(n);
 }
 
-/* 開放が行われていないメモリの情報を表示する関数 */
+/* 未解放メモリの情報を表示する関数 */
 void	mem_mgt_check(const char *file, unsigned int line, const char *func)
 {
 	size_t	i;
@@ -127,6 +127,7 @@ void	mem_mgt_check(const char *file, unsigned int line, const char *func)
 	}
 }
 
+/* 未解放メモリを解放する関数 */
 void	mem_mgt_free_all()
 {
 	size_t	i;
