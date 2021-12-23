@@ -61,7 +61,7 @@ void	mem_mgt_free(void *ptr)
 	{
 		if (g_mem_mgt.mem_info[i].ptr == ptr)
 		{
-			g_mem_mgt.use_byte += g_mem_mgt.mem_info[i].size;
+			g_mem_mgt.use_byte -= g_mem_mgt.mem_info[i].size;
 			g_mem_mgt.mem_info[i].ptr = NULL;
 			g_mem_mgt.mem_info[i].size = 0;
 			g_mem_mgt.mem_info[i].file = NULL;
