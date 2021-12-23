@@ -23,7 +23,8 @@ void	mem_mgt_init(void)
 }
 
 /* メモリ確保とそのメモリの情報を記録する関数 */
-void	*mem_mgt_malloc(size_t size, const char *file, unsigned int line, const char *func)
+void	*mem_mgt_malloc(size_t size, const char *file, unsigned int line,
+		const char *func)
 {
 	size_t	i;
 	void	*ptr;
