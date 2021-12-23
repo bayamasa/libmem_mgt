@@ -36,11 +36,13 @@ void	*mem_mgt_malloc(size_t size, const char *file, unsigned int line, const cha
 	{
 		if (g_mem_mgt.mem_info[i].ptr == NULL)
 		{
+			g_mem_mgt.use_byte += size;
 			g_mem_mgt.mem_info[i].ptr = ptr;
 			g_mem_mgt.mem_info[i].size = size;
 			g_mem_mgt.mem_info[i].file = file;
 			g_mem_mgt.mem_info[i].line = line;
 			g_mem_mgt.mem_info[i].func = func;
+			g_mem_mgt.use_mem_info++;
 			break ;
 		}
 		i++;
@@ -58,11 +60,13 @@ void	mem_mgt_free(void *ptr)
 	{
 		if (g_mem_mgt.mem_info[i].ptr == ptr)
 		{
+			g_mem_mgt.use_byte += g_mem_mgt.mem_info[i].size;
 			g_mem_mgt.mem_info[i].ptr = NULL;
 			g_mem_mgt.mem_info[i].size = 0;
 			g_mem_mgt.mem_info[i].file = NULL;
 			g_mem_mgt.mem_info[i].line = 0;
 			g_mem_mgt.mem_info[i].func = NULL;
+			g_mem_mgt.use_mem_info--;
 			break ;
 		}
 		i++;
