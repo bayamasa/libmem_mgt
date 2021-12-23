@@ -29,6 +29,18 @@ void	*mem_mgt_malloc(size_t size, const char *file, unsigned int line,
 	size_t	i;
 	void	*ptr;
 
+	if (g_mem_mgt.use_mem_info + 1 > MAX_NUM)
+	{
+		printf("管理数の上限を超えました\n");
+		mem_mgt_free_all();
+		exit(1);
+	}
+	if (g_mem_mgt.use_byte + size > MAX_SIZE)
+	{
+		printf("mallocで確保できるサイズの上限を超えました\n");
+		mem_mgt_free_all();
+		exit(1);
+	}
 	ptr = malloc(size);
 	if (ptr == NULL)
 		return (NULL);
