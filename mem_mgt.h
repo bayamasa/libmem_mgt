@@ -8,6 +8,9 @@
 /* 管理数の上限 */
 # define MAX_NUM 30
 
+/* 確保できるサイズの上限(byte) */
+# define MAX_SIZE 10000
+
 /* メモリ管理構造体 */
 typedef struct s_mem_info
 {
