@@ -90,7 +90,8 @@ void	mem_mgt_finish_check(int n)
 				printf("\x1b[31m--------メモリリークを検出!!!!--------\x1b[39m\n");
 			printf(" アドレス : %p\n", g_mem_mgt.mem_info[i].ptr);
 			printf(" サイズ   : %zuバイト\n", g_mem_mgt.mem_info[i].size);
-			printf(" 場所     : %s:%u行目:%s関数\n", g_mem_mgt.mem_info[i].file, g_mem_mgt.mem_info[i].line, g_mem_mgt.mem_info[i].func);
+			printf(" 場所     : %s:%s関数:%u行目\n", g_mem_mgt.mem_info[i].file, \
+			g_mem_mgt.mem_info[i].func, g_mem_mgt.mem_info[i].line);
 			printf("\x1b[31m--------------------------------------\x1b[39m\n");
 			first_flag = false;
 		}
@@ -113,10 +114,12 @@ void	mem_mgt_check(const char *file, unsigned int line, const char *func)
 		if (g_mem_mgt.mem_info[i].ptr != NULL)
 		{
 			if (first_flag)
-				printf("\x1b[33m--%s:%u行目:%s関数のヒープ領域--\x1b[39m\n", file, line, func);
+				printf("\x1b[33m--%s:%s関数:%u行目のヒープ領域--\x1b[39m\n", \
+				file, func, line);
 			printf(" アドレス : %p\n", g_mem_mgt.mem_info[i].ptr);
 			printf(" サイズ   : %zuバイト\n", g_mem_mgt.mem_info[i].size);
-			printf(" 場所     : %s:%u行目:%s関数\n", g_mem_mgt.mem_info[i].file, g_mem_mgt.mem_info[i].line, g_mem_mgt.mem_info[i].func);
+			printf(" 場所     : %s:%s関数:%u行目\n", g_mem_mgt.mem_info[i].file, \
+			g_mem_mgt.mem_info[i].func, g_mem_mgt.mem_info[i].line);
 			printf("\x1b[33m--------------------------------------\x1b[39m\n");
 			first_flag = false;
 		}
