@@ -6,14 +6,14 @@
 #    By: tkirihar <tkirihar@student.42tokyo.jp>     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/12/16 11:33:44 by tkirihar          #+#    #+#              #
-#    Updated: 2021/12/16 12:01:22 by tkirihar         ###   ########.fr        #
+#    Updated: 2021/12/23 18:34:45 by tkirihar         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 
-NAME = 		libleek_checker.a
+NAME = 		libmem_mgt.a
 
-SRCS = 		leak_checker.c
+SRCS = 		mem_mgt.c
 
 OBJS = 		$(SRCS:.c=.o)
 
