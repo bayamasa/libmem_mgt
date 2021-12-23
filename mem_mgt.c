@@ -91,26 +91,23 @@ void	mem_mgt_free(void *ptr)
 void	mem_mgt_finish_check(int n)
 {
 	size_t	i;
-	bool	first_flag;
 
-	printf("\x1b[33m-----プログラム終了時のヒープ領域-----\x1b[39m\n");
+	if (g_mem_mgt.use_mem_info == 0)
+		exit(0);
+	printf("\x1b[31m--------メモリリークを検出!!!!--------\x1b[39m\n");
 	printf(" 合計サイズ : %zuバイト 確保数 : %zu個\n", \
 	g_mem_mgt.use_byte, g_mem_mgt.use_mem_info);
-	printf("\x1b[33m--------------------------------------\x1b[39m\n");
-	first_flag = true;
+	printf("\x1b[31m--------------------------------------\x1b[39m\n");
 	i = 0;
 	while (i < MAX_NUM)
 	{
 		if (g_mem_mgt.mem_info[i].ptr != NULL)
 		{
-			if (first_flag)
-				printf("\x1b[31m--------メモリリークを検出!!!!--------\x1b[39m\n");
 			printf(" アドレス : %p\n", g_mem_mgt.mem_info[i].ptr);
 			printf(" サイズ   : %zuバイト\n", g_mem_mgt.mem_info[i].size);
 			printf(" 場所     : %s:%s関数:%u行目\n", g_mem_mgt.mem_info[i].file, \
 			g_mem_mgt.mem_info[i].func, g_mem_mgt.mem_info[i].line);
 			printf("\x1b[31m--------------------------------------\x1b[39m\n");
-			first_flag = false;
 		}
 		i++;
 	}
