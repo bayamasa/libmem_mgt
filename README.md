@@ -1,7 +1,7 @@
 # libmem_mgt
 
 C言語のmallocで確保したメモリを管理してくれるツールです。<br>
-これを使えば100%メモリリークが起きません！
+これを使えば**100%メモリリークが起きません！**
 
 # 機能
 
@@ -32,16 +32,16 @@ C言語のmallocで確保したメモリを管理してくれるツールです�
 	#include "libmem_mgt/mem_mgt.h"
 	#include "libmem_mgt/replace_mem_mgt.h"
 	```
-1. leak_checker_init()を呼び出し
+1. mem_mgt_init()を呼び出し
 
 	main関数の最初の行にmem_mgt_init();を追記します。<br>
-	特定の行でメモリ未開放領域を確認したいときは、その行にmem_mgt_check();を追記します。<br>
-	特定の行でメモリ未開放領域をfreeしたいときは、その行にmem_mgt_free_all();を追記します。
+	特定の行でメモリ未開放領域を確認したいときは、その行にmem_mgt_check();を追記してください。<br>
+	特定の行でメモリ未開放領域をfreeしたいときは、その行にmem_mgt_free_all();を追記してください。
 1. コンパイルして実行
 
 	2.で作成したlibmem_mgt.aを含めてコンパイルして実行すればメモリリークの情報を標準出力に検出してくれます。
 
 # 注意事項
 
-プログラムをexitで終了してください。<br>
+プログラムはexitで終了してください。<br>
 main関数のreturn終了やCtrl + Dには対応していません。
