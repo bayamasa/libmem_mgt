@@ -3,25 +3,6 @@
 /* メモリ情報を格納する構造体の配列 */
 t_mem_mgt	g_mem_mgt;
 
-/* メモリ管理配列を初期化する関数 */
-void	mem_mgt_init(void)
-{
-	size_t	i;
-
-	g_mem_mgt.use_byte = 0;
-	g_mem_mgt.use_mem_info = 0;
-	i = 0;
-	while (i < MAX_NUM)
-	{
-		g_mem_mgt.mem_info[i].ptr = NULL;
-		g_mem_mgt.mem_info[i].size = 0;
-		g_mem_mgt.mem_info[i].file = NULL;
-		g_mem_mgt.mem_info[i].line = 0;
-		g_mem_mgt.mem_info[i].func = NULL;
-		i++;
-	}
-}
-
 /* メモリ確保とそのメモリの情報を記録する関数 */
 void	*mem_mgt_malloc(size_t size, const char *file, unsigned int line,
 		const char *func)
@@ -37,8 +18,7 @@ void	*mem_mgt_malloc(size_t size, const char *file, unsigned int line,
 	}
 	if (g_mem_mgt.use_byte + size > MAX_SIZE)
 	{
-		printf("The maximum size that can be allocated by malloc has been \
-		exceeded.\n");
+		printf("The maximum size that can be allocated by malloc has been exceeded.\n");
 		mem_mgt_free_all();
 		exit(1);
 	}
