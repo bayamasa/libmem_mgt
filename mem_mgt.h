@@ -9,7 +9,7 @@
 # define MAX_NUM 100
 
 /* 確保できるサイズの上限(byte) */
-# define MAX_SIZE 10000
+# define MAX_SIZE 100000
 
 /* メモリ管理構造体 */
 typedef struct s_mem_info
