@@ -5,9 +5,6 @@
 # include <stdio.h>
 # include <stdbool.h>
 
-/* 管理数の上限 */
-# define MAX_NUM 100
-
 /* 確保できるサイズの上限(byte) */
 # define MAX_SIZE 100000
 

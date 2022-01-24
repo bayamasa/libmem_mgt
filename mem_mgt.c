@@ -11,12 +11,6 @@ void	*mem_mgt_malloc(size_t size, const char *file, unsigned int line,
 	t_mem_info	*current;
 	t_mem_info	*prev;
 
-	if (g_mem_mgt.use_cnt + 1 > MAX_NUM)
-	{
-		printf("The maximum number of controls has been exceeded.\n");
-		mem_mgt_free_all();
-		exit(1);
-	}
 	if (g_mem_mgt.use_byte + size > MAX_SIZE)
 	{
 		printf("The maximum size that can be allocated by malloc has been exceeded.\n");
