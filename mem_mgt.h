@@ -14,18 +14,20 @@
 /* メモリ管理構造体 */
 typedef struct s_mem_info
 {
-	void			*ptr;
-	size_t			size;
-	const char		*file;
-	unsigned int	line;
-	const char		*func;
+	void				*ptr;
+	size_t				size;
+	const char			*file;
+	unsigned int		line;
+	const char			*func;
+	void				*mem_mgt_ptr;
+	struct s_mem_info	*next;
 }	t_mem_info;
 
 typedef struct s_mem_mgt
 {
-	t_mem_info	mem_info[MAX_NUM];
+	t_mem_info	*head;
 	size_t		use_byte;
-	size_t		use_mem_info;
+	size_t		use_cnt;
 }	t_mem_mgt;
 
 /* 関数のプロトタイプ宣言 */

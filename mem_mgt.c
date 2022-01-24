@@ -7,10 +7,11 @@ t_mem_mgt	g_mem_mgt;
 void	*mem_mgt_malloc(size_t size, const char *file, unsigned int line,
 		const char *func)
 {
-	size_t	i;
-	void	*ptr;
+	t_mem_info	*new;
+	t_mem_info	*current;
+	t_mem_info	*prev;
 
-	if (g_mem_mgt.use_mem_info + 1 > MAX_NUM)
+	if (g_mem_mgt.use_cnt + 1 > MAX_NUM)
 	{
 		printf("The maximum number of controls has been exceeded.\n");
 		mem_mgt_free_all();
@@ -22,48 +23,78 @@ void	*mem_mgt_malloc(size_t size, const char *file, unsigned int line,
 		mem_mgt_free_all();
 		exit(1);
 	}
-	ptr = malloc(size);
-	if (ptr == NULL)
+	new = (t_mem_info *)malloc(sizeof(t_mem_info));
+	if (new == NULL)
 		return (NULL);
-	i = 0;
-	while (i < MAX_NUM)
+	new->ptr = malloc(size);
+	if (new->ptr == NULL)
 	{
-		if (g_mem_mgt.mem_info[i].ptr == NULL)
-		{
-			g_mem_mgt.use_byte += size;
-			g_mem_mgt.mem_info[i].ptr = ptr;
-			g_mem_mgt.mem_info[i].size = size;
-			g_mem_mgt.mem_info[i].file = file;
-			g_mem_mgt.mem_info[i].line = line;
-			g_mem_mgt.mem_info[i].func = func;
-			g_mem_mgt.use_mem_info++;
-			break ;
-		}
-		i++;
+		free(new);
+		return (NULL);
 	}
-	return (ptr);
+	g_mem_mgt.use_byte += size;
+	g_mem_mgt.use_cnt++;
+	new->mem_mgt_ptr = (void *)new;
+	new->size = size;
+	new->file = file;
+	new->line = line;
+	new->func = func;
+	new->next = NULL;
+	if (g_mem_mgt.head == NULL)
+	{
+		g_mem_mgt.head = new;
+		return (new->ptr);
+	}
+	current = g_mem_mgt.head;
+	while (current != NULL)
+	{
+		prev = current;
+		current = current->next;
+	}
+	prev->next = new;
+	current = new;
+	return (new->ptr);
 }
 
 /* メモリの解放とそのアドレスのメモリ情報を記録から削除する関数 */
 void	mem_mgt_free(void *ptr)
 {
-	size_t	i;
+	t_mem_info	*prev;
+	t_mem_info	*current;
 
-	i = 0;
-	while (i < MAX_NUM)
+	if (g_mem_mgt.head == NULL)
 	{
-		if (g_mem_mgt.mem_info[i].ptr == ptr)
+		free(ptr);
+		return ;
+	}
+	current = g_mem_mgt.head;
+	if (current->ptr == ptr)
+	{
+		g_mem_mgt.head = current->next;
+		g_mem_mgt.use_byte -= current->size;
+		g_mem_mgt.use_cnt--;
+		free(current->mem_mgt_ptr);
+		free(ptr);
+		return ;
+	}
+	while (current != NULL)
+	{
+		if (current->ptr == ptr)
 		{
-			g_mem_mgt.use_byte -= g_mem_mgt.mem_info[i].size;
-			g_mem_mgt.mem_info[i].ptr = NULL;
-			g_mem_mgt.mem_info[i].size = 0;
-			g_mem_mgt.mem_info[i].file = NULL;
-			g_mem_mgt.mem_info[i].line = 0;
-			g_mem_mgt.mem_info[i].func = NULL;
-			g_mem_mgt.use_mem_info--;
+			prev->next = current->next;
+			g_mem_mgt.use_byte -= current->size;
+			g_mem_mgt.use_cnt--;
+			current->ptr = NULL;
+			current->size = 0;
+			current->file = NULL;
+			current->line = 0;
+			current->func = NULL;
+			free(current->mem_mgt_ptr);
+			current->mem_mgt_ptr = NULL;
 			break ;
 		}
-		i++;
+		prev = current;
+		current = current->next;
 	}
 	free(ptr);
 }
@@ -71,26 +102,23 @@ void	mem_mgt_free(void *ptr)
 /* 未解放メモリの情報を表示し、全て解放し、プログラムを終了する関数 */
 void	mem_mgt_finish_check(int n)
 {
-	size_t	i;
+	t_mem_info	*current;
 
-	if (g_mem_mgt.use_mem_info == 0)
+	if (g_mem_mgt.use_cnt == 0)
 		exit(0);
 	printf("\x1b[31m--------Detect memory leaks!!!!--------\x1b[39m\n");
-	printf(" number     : %zu\n", g_mem_mgt.use_mem_info);
+	printf(" number     : %zu\n", g_mem_mgt.use_cnt);
 	printf(" total size : %zubyte\n", g_mem_mgt.use_byte);
 	printf("\x1b[31m---------------------------------------\x1b[39m\n");
-	i = 0;
-	while (i < MAX_NUM)
+	current = g_mem_mgt.head;
+	while (current != NULL)
 	{
-		if (g_mem_mgt.mem_info[i].ptr != NULL)
-		{
-			printf(" address : %p\n", g_mem_mgt.mem_info[i].ptr);
-			printf(" size    : %zubyte\n", g_mem_mgt.mem_info[i].size);
-			printf(" place   : %s:func %s:line %u\n", g_mem_mgt.mem_info[i].file, \
-			g_mem_mgt.mem_info[i].func, g_mem_mgt.mem_info[i].line);
-			printf("\x1b[31m---------------------------------------\x1b[39m\n");
-		}
-		i++;
+		printf(" address : %p\n", current->ptr);
+		printf(" size    : %zubyte\n", current->size);
+		printf(" place   : %s:func %s:line %u\n", current->file, \
+				current->func, current->line);
+		printf("\x1b[31m---------------------------------------\x1b[39m\n");
+		current = current->next;
 	}
 	mem_mgt_free_all();
 	exit(n);
@@ -99,38 +127,35 @@ void	mem_mgt_finish_check(int n)
 /* 未解放メモリの情報を表示する関数 */
 void	mem_mgt_check(const char *file, unsigned int line, const char *func)
 {
-	size_t	i;
+	t_mem_info	*current;
 
 	printf("\x1b[33m--------------leeks check--------------\x1b[39m\n");
 	printf(" check place : %s:func %s:line %u\n", file, func, line);
-	printf(" number      : %zu\n", g_mem_mgt.use_mem_info);
+	printf(" number      : %zu\n", g_mem_mgt.use_cnt);
 	printf(" total size  : %zubyte\n", g_mem_mgt.use_byte);
 	printf("\x1b[33m---------------------------------------\x1b[39m\n");
-	i = 0;
-	while (i < MAX_NUM)
+	current = g_mem_mgt.head;
+	while (current != NULL)
 	{
-		if (g_mem_mgt.mem_info[i].ptr != NULL)
-		{
-			printf(" address : %p\n", g_mem_mgt.mem_info[i].ptr);
-			printf(" size    : %zubyte\n", g_mem_mgt.mem_info[i].size);
-			printf(" place   : %s:func %s:line %u\n", g_mem_mgt.mem_info[i].file, \
-			g_mem_mgt.mem_info[i].func, g_mem_mgt.mem_info[i].line);
-			printf("\x1b[33m---------------------------------------\x1b[39m\n");
-		}
-		i++;
+		printf(" address : %p\n", current->ptr);
+		printf(" size    : %zubyte\n", current->size);
+		printf(" place   : %s:func %s:line %u\n", current->file, \
+				current->func, current->line);
+		printf("\x1b[33m---------------------------------------\x1b[39m\n");
+		current = current->next;
 	}
 }
 
 /* 未解放メモリを解放する関数 */
 void	mem_mgt_free_all()
 {
-	size_t	i;
+	t_mem_info	*current;
 
-	i = 0;
-	while (i < MAX_NUM)
+	current = g_mem_mgt.head;
+	while (current != NULL)
 	{
-		if (g_mem_mgt.mem_info[i].ptr != NULL)
-			mem_mgt_free(g_mem_mgt.mem_info[i].ptr);
-		i++;
+		if (current->ptr != NULL)
+			mem_mgt_free(current->ptr);
+		current = current->next;
 	}
 }
