@@ -27,6 +27,9 @@ typedef struct s_mem_mgt
 	size_t		use_cnt;
 }	t_mem_mgt;
 
+/* メモリ情報を格納する構造体 */
+t_mem_mgt	g_mem_mgt;
+
 /* 関数のプロトタイプ宣言 */
 
 void	*mem_mgt_malloc(size_t size, const char *file, unsigned int line, const char *func);

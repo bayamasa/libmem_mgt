@@ -1,6 +1,10 @@
 NAME = 		libmem_mgt.a
 
-SRCS = 		mem_mgt.c
+SRCS = 		mem_mgt_malloc.c \
+			mem_mgt_free.c \
+			mem_mgt_finish_check.c \
+			mem_mgt_check.c \
+			mem_mgt_free_all.c
 
 OBJS = 		$(SRCS:.c=.o)
 
